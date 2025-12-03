@@ -3,532 +3,643 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STANDARD — Ore & Costi Personale Prefabbricati Precompressi</title>
+  <title>STANDARD v2.2 — Ore & Costi Personale Completo</title>
   <style>
     :root{
       color-scheme: dark;
       --bg:#0f1115; --panel:#151821; --muted:#1b2030; --text:#e6e6e6; --sub:#aeb6c2; --accent:#5eead4;
-      --line:#23283a;
+      --line:#2a3042; --danger:#f43f5e; --success:#10b981; --warning:#f59e0b;
     }
-    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,Segoe UI,Roboto,Helvetica,Arial}
-    .wrap{max-width:1200px;margin:0 auto;padding:18px;}
-    .toolbar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--bg),rgba(15,17,21,.85));backdrop-filter: blur(6px);border-bottom:1px solid var(--line)}
-    .toolbar .inner{display:flex;gap:8px;align-items:center;padding:10px 0;flex-wrap:wrap}
-    .btn{background:var(--muted);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
-    .btn:hover{background:#21263a}
-    .btn.primary{background:var(--accent); color:#0b0f15; border-color:transparent;font-weight:600}
-    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
-    .card h3{margin:0 0 8px 0;font-size:14px;color:var(--sub);font-weight:600}
-    .card .big{font-size:22px;font-weight:700}
-    .grid{overflow:auto;border:1px solid var(--line);border-radius:14px}
-    table{width:100%;border-collapse:separate;border-spacing:0}
-    thead th{box-shadow: 0 1px 0 var(--line), 0 2px 6px rgba(0,0,0,.15); position:sticky;top:0px;background:var(--panel);z-index:60;border-bottom:1px solid var(--line);padding:10px 8px;color:var(--sub);text-align:left}
-    tbody td{border-bottom:1px solid var(--line);padding:6px 8px}
-    tfoot td{background:var(--panel);position:sticky;bottom:0;border-top:1px solid var(--line);padding:10px 8px}
-    input, select{background:#0f1320;color:var(--text);border:1px solid #2a3554;border-radius:10px;padding:8px;width:100%}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:13px/1.4 'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+    .wrap{max-width:1400px;margin:0 auto;padding:12px;display:flex;flex-direction:column;height:100vh;box-sizing:border-box}
+    
+    /* Toolbar */
+    .toolbar{flex:0 0 auto; margin-bottom:12px; z-index:50;}
+    .toolbar .inner{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--panel);padding:8px;border:1px solid var(--line);border-radius:12px}
+    
+    /* Buttons */
+    .btn{background:var(--muted);border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:500;transition:all 0.2s}
+    .btn:hover{background:#262d40;border-color:#4b5563}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:var(--accent); color:#0b0f15; border-color:transparent;font-weight:700}
+    .btn.danger{color:var(--danger);border-color:rgba(244,63,94,0.3)}
+    .btn.danger:hover{background:rgba(244,63,94,0.1)}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;flex:0 0 auto}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;justify-content:center}
+    .card h3{margin:0 0 4px 0;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--sub);font-weight:600}
+    .card .big{font-size:18px;font-weight:700;color:var(--text)}
+    .card .big.accent{color:var(--accent)}
+    .card .big.warning{color:var(--warning)}
+
+    /* Inputs */
+    input, select{background:#0b0d12;color:var(--text);border:1px solid #2a3554;border-radius:6px;padding:6px;width:100%;box-sizing:border-box;font-family:inherit;font-size:12px}
+    input:focus, select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(94,234,212,0.1)}
     .num{text-align:right}
-    .badge{font-size:12px;color:#0b0f15;background:var(--accent);display:inline-block;padding:2px 8px;border-radius:999px;font-weight:700}
-    .note{color:var(--sub);font-size:12px}
-    .split{display:grid;grid-template-columns:1fr;gap:12px}
-    .filters{display:flex;gap:8px;align-items:center}
-    .filters input{min-width:220px}
-    @media (max-width:920px){ .cards{grid-template-columns:1fr 1fr} thead th{box-shadow: 0 1px 0 var(--line), 0 2px 6px rgba(0,0,0,.15); top:0px} }
-    @media (max-width:600px){ .cards{grid-template-columns:1fr} .toolbar .inner{gap:6px} thead th{box-shadow: 0 1px 0 var(--line), 0 2px 6px rgba(0,0,0,.15); top:0px} }
+    
+    /* Filters */
+    .filters{display:flex;gap:6px;align-items:center;flex:1}
+    .filters input{min-width:150px}
+
+    /* Grid Table Container */
+    .grid-container{flex:1;overflow:hidden;border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;background:var(--panel)}
+    .grid-scroll{overflow:auto;flex:1}
+    
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:1200px}
+    
+    /* Sticky Headers */
+    thead th{
+      position:sticky; top:0; z-index:10;
+      background:#1a1e29;
+      border-bottom:1px solid var(--line);
+      padding:8px;
+      color:var(--sub);
+      font-size:11px;
+      text-align:left;
+      font-weight:600;
+      cursor:default;
+      user-select:none;
+    }
+    thead th.sortable:hover{color:var(--accent);cursor:pointer}
+    
+    tbody tr:hover{background:rgba(255,255,255,0.02)}
+    tbody td{border-bottom:1px solid var(--line);padding:4px 6px;vertical-align:middle}
+    
+    /* Data Bars (Heatmap) */
+    .data-bar-cell{position:relative;z-index:1}
+    .data-bar{position:absolute;top:2px;bottom:2px;right:2px;background:rgba(94,234,212,0.15);z-index:-1;border-radius:4px;transition:width 0.3s}
+    
+    /* Sticky Footer inside table */
+    tfoot td{
+      position:sticky; bottom:0; z-index:10;
+      background:#1a1e29;
+      border-top:1px solid var(--line);
+      padding:8px;
+      font-weight:600;
+      color:var(--accent);
+    }
+
+    /* Section Split */
+    .split{display:grid;grid-template-columns:3fr 1fr;gap:8px;margin-bottom:8px;flex:0 0 auto}
+    .param-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 12px}
+    .param-grid label{font-size:11px;color:var(--sub);display:block;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    
+    /* Utilities */
+    .badge{font-size:10px;color:#0b0f15;background:var(--accent);padding:1px 6px;border-radius:99px;font-weight:700;margin-left:8px;vertical-align:middle}
+    .note{color:var(--sub);font-size:11px}
+    .text-right{text-align:right}
+
+    /* Print */
     @media print{
-      @page{ size:A4 portrait; margin:12mm }
-      body{ background:#fff; color:#000 }
-      .toolbar, .note-download, .legend-centri{ display:none !important }
-      .wrap{ max-width:100%; padding:0 }
-      thead th{box-shadow: 0 1px 0 var(--line), 0 2px 6px rgba(0,0,0,.15);  position:sticky; top:0; background:#fff; color:#000; border-bottom:1px solid #000 }
-      table, td, th{ border-color:#000 }
+      @page{size:landscape;margin:5mm}
+      body{background:#fff;color:#000;-webkit-print-color-adjust:exact}
+      .toolbar, .filters, .note-download{display:none !important}
+      .wrap{height:auto;overflow:visible;display:block}
+      .grid-container{border:none;overflow:visible}
+      table{border:1px solid #ccc}
+      thead th{background:#eee;color:#000;border-bottom:1px solid #000}
+      tbody td{border-bottom:1px solid #ccc}
+      input{border:none;background:transparent;color:#000;padding:0}
+      .card{border:1px solid #000;break-inside:avoid}
+      .data-bar{display:none} /* Hide colored bars for print */
     }
   </style>
-  <script>
-    const CENTRI_PREDEFINITI = [
-      'Reparto','Ferro','Magazzino','Ufficio Tecnico','Qualità','Manutenzione','Logistica','Sicurezza','Servizi','Amministrazione','Commerciale'
-    ];
-    const CENTRO_PALETTE = {
-      'Reparto':'rgba(99,102,241,0.10)',
-      'Ferro':'rgba(16,185,129,0.12)',
-      'Magazzino':'rgba(234,179,8,0.12)',
-      'Ufficio Tecnico':'rgba(56,189,248,0.12)',
-      'Qualità':'rgba(244,63,94,0.12)',
-      'Manutenzione':'rgba(34,197,94,0.12)',
-      'Logistica':'rgba(250,204,21,0.12)',
-      'Sicurezza':'rgba(251,146,60,0.12)',
-      'Servizi':'rgba(94,234,212,0.12)',
-      'Amministrazione':'rgba(245,158,11,0.12)',
-      'Commerciale':'rgba(99,163,117,0.12)'
-    };
-  </script>
 </head>
 <body>
-  <div class="wrap">
-    <header class="toolbar">
+
+<div class="wrap">
+  
+  <!-- Header & Toolbar -->
+  <div>
+    <h2 style="margin:0 0 8px 0;display:flex;align-items:center">
+      Standard v2.2 <span style="font-weight:400;color:var(--sub);margin:0 8px">— Ore & Costi Personale</span>
+      <span class="badge">LISTA COMPLETA</span>
+    </h2>
+    
+    <div class="toolbar">
       <div class="inner">
-        <button class="btn primary" id="addRow">+ Aggiungi riga</button>
-        <button class="btn" id="dupRow">Duplica selezionate</button>
-        <button class="btn" id="delRow">Elimina selezionate</button>
-        <button class="btn" id="restoreDefaults">Ripristina voci standard</button>
-        <button class="btn" id="reset">Nuovo foglio</button>
-        <span style="flex:1"></span>
-        <div class="filters">
-          <input id="search" placeholder="Cerca ruolo/note…" />
-          <select id="fTipo">
-            <option value="">Tipo: tutti</option>
-            <option>Interno</option>
-            <option>Esterno</option>
-          </select>
-          <select id="fCentro">
-            <option value="">Centro di costo: tutti</option>
-          </select>
-          <select id="fVoce">
-            <option value="">Voce: tutte</option>
-          </select>
+        <button class="btn primary" id="addRow"><span>+</span> Riga</button>
+        <button class="btn" id="dupRow">Duplica</button>
+        <button class="btn danger" id="delRow">Elimina</button>
+        <span style="width:1px;height:20px;background:var(--line);margin:0 4px"></span>
+        <button class="btn" id="restoreDefaults">Ripristina Standard</button>
+        <button class="btn" id="reset">Nuovo</button>
+        
+        <div class="filters" style="margin-left:12px">
+          <input id="search" placeholder="🔍 Cerca ruolo, note..." />
+          <select id="fTipo" style="width:auto"><option value="">Tutti i Tipi</option><option>Interno</option><option>Esterno</option></select>
+          <select id="fCentro" style="width:auto"><option value="">Tutti i Centri</option></select>
         </div>
-        <span style="flex:1"></span>
-        <button class="btn" id="exportCSV">Esporta CSV</button>
-        <button class="btn" id="downloadHTML">Scarica HTML</button>
-        <button class="btn" id="print">Stampa PDF</button>
+
+        <button class="btn" id="exportCSV">CSV</button>
+        <button class="btn" id="print">PDF</button>
         <button class="btn" id="save">Salva</button>
         <button class="btn" id="load">Carica</button>
       </div>
-    </header>
+    </div>
+  </div>
 
-    <h1 style="margin:16px 0 8px 0">STANDARD — Ore & Costi Personale <span class="badge">Prefabbricati precompressi</span></h1>
-    <p class="note">Lista standard precompilata con ruoli tipici. Inserisci le ore/forfait della commessa: i costi si aggiornano automaticamente. I totali si aggiornano in base ai filtri attivi.</p>
+  <!-- KPI Cards -->
+  <section class="cards" id="summaryCards">
+    <div class="card">
+        <h3>Costo Diretto</h3>
+        <div class="big" id="costoDirettoTot">€ 0</div>
+        <div class="note" id="oreDiretteTot">0 h</div>
+    </div>
+    <div class="card">
+        <h3>Costo Industriale</h3>
+        <div class="big" id="costoIndustriale">€ 0</div>
+        <div class="note">Dir + Ind + Forf + Overhead</div>
+    </div>
+    <div class="card">
+        <h3>Costo Pieno</h3>
+        <div class="big warning" id="costoPieno">€ 0</div>
+        <div class="note">+ Imprevisti + Fissi</div>
+    </div>
+    <div class="card" style="border-color:var(--accent)">
+        <h3>PREZZO TOTALE (Suggerito)</h3>
+        <div class="big accent" id="prezzoFinale">€ 0</div>
+        <div class="note">+ Margine %</div>
+    </div>
+  </section>
 
-    <section class="cards" id="summaryCards">
-      <div class="card"><h3>Ore dirette totali (filtrate)</h3><div class="big" id="oreDiretteTot">0,00 h</div></div>
-      <div class="card"><h3>Ore indirette totali (filtrate)</h3><div class="big" id="oreIndiretteTot">0,00 h</div></div>
-      <div class="card"><h3>Costo diretto (filtrato)</h3><div class="big" id="costoDirettoTot">€ 0,00</div></div>
-      <div class="card"><h3>Costo indiretto + overhead + forfait (filtrato)</h3><div class="big" id="costoIndireT">€ 0,00</div></div>
-    </section>
-
-    <div style="height:12px"></div>
-
-    <section class="split">
-      <div class="card">
-        <h3>Parametri economici</h3>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-          <label>Overhead % su costo diretto
-            <input type="text" id="overheadPct" value="15,00">
-          </label>
-          <label>Pezzi prodotti (opz.)
-            <input type="text" id="pezzi" value="">
-          </label>
-          <label>Volume cls totale m³ (opz.)
-            <input type="text" id="volume" value="">
-          </label>
-          <label>Coeff. straordinari globale
-            <input type="text" id="coeffGlobale" value="1,00">
-          </label>
+  <!-- Parameters -->
+  <section class="split">
+    <div class="card">
+      <h3>Parametri Economici Generali</h3>
+      <div class="param-grid">
+        <div><label title="Percentuale calcolata sui costi diretti">Overhead % (su Dir.)</label><input type="text" class="num" id="overheadPct" value="15,00"></div>
+        <div><label title="Moltiplicatore globale del costo orario">Coeff. Straordinari</label><input type="text" class="num" id="coeffGlobale" value="1,00"></div>
+        <div><label title="Percentuale di sicurezza sul costo totale">Imprevisti % (Rischio)</label><input type="text" class="num" id="imprevistiPct" value="0,00"></div>
+        <div><label title="Percentuale di ricarico sul costo pieno">Margine % (Utile)</label><input type="text" class="num" id="marginePct" value="10,00"></div>
+        
+        <div><label title="Costi fissi extra commessa (es. spese generali progetto)">Costi Fissi Extra (€)</label><input type="text" class="num" id="costiFissi" value="0"></div>
+        <div><label>Totale Pezzi (opz.)</label><input type="text" class="num" id="pezzi" placeholder="0"></div>
+        <div><label>Totale m³ (opz.)</label><input type="text" class="num" id="volume" placeholder="0,00"></div>
+        <div></div> <!-- Spacer -->
+      </div>
+    </div>
+    <div class="card">
+      <h3>Indicatori Unitari (Prezzo)</h3>
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:4px">
+            <span class="note">Prezzo / Pezzo</span>
+            <span class="big" style="font-size:16px" id="costoPerPezzo">€ 0,00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="note">Prezzo / m³</span>
+            <span class="big" style="font-size:16px" id="costoPerMc">€ 0,00</span>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="card">
-        <h3>Indicatori</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div><div class="note">Costo totale (filtrato)</div><div class="big" id="costoTot">€ 0,00</div></div>
-          <div><div class="note">€/pezzo</div><div class="big" id="costoPerPezzo">€ 0,00</div></div>
-          <div><div class="note">€/m³</div><div class="big" id="costoPerMc">€ 0,00</div></div>
-        </div>
-      </div>
-    </section>
-
-    <div style="height:12px"></div>
-
-    <div class="grid">
+  <!-- Main Grid -->
+  <div class="grid-container">
+    <div class="grid-scroll">
       <table id="tbl">
         <thead>
           <tr>
-            <th style="width:28px"><input type="checkbox" id="selAll"></th>
-            <th style="min-width:120px">Tipo</th>
-            <th style="min-width:170px">Centro di costo</th>
-            <th style="min-width:200px">Ruolo / Voce</th>
-            <th class="num" style="min-width:100px">Ore dir.</th>
-            <th class="num" style="min-width:120px">Costo orario (€/h)</th>
-            <th class="num" style="min-width:95px">Coeff dir.</th>
-            <th class="num" style="min-width:120px">Costo diretto</th>
-            <th class="num" style="min-width:100px">Ore ind.</th>
-            <th class="num" style="min-width:120px">Costo orario ind. (€/h)</th>
-            <th class="num" style="min-width:95px">Coeff ind.</th>
-            <th class="num" style="min-width:120px">Costo indiretto</th>
-            <th class="num" style="min-width:140px">Forfait esterno (€)</th>
-            <th style="min-width:200px">Note</th>
+            <th style="width:30px"><input type="checkbox" id="selAll"></th>
+            <th style="width:90px">Tipo</th>
+            <th style="width:130px">Centro Costo</th>
+            <th style="min-width:180px">Ruolo / Voce</th>
+            <th class="num" style="width:60px">Ore D.</th>
+            <th class="num" style="width:70px">€/h</th>
+            <th class="num" style="width:50px">Coeff</th>
+            <th class="num sortable" onclick="app.sortBy('cd')" style="width:90px">Costo Dir. ▼</th>
+            <th class="num" style="width:60px">Ore I.</th>
+            <th class="num" style="width:70px">€/h Ind.</th>
+            <th class="num" style="width:50px">Coeff</th>
+            <th class="num sortable" onclick="app.sortBy('ci')" style="width:90px">Costo Ind. ▼</th>
+            <th class="num" style="width:80px">Forfait</th>
+            <th style="min-width:150px">Note</th>
           </tr>
         </thead>
         <tbody id="body"></tbody>
         <tfoot>
-          <tr><td colspan="14" class="note">Modifica solo le ore e gli importi forfait: i costi orari sono precompilati e modificabili. Usa "Ripristina voci standard" per reintrodurre eventuali righe eliminate.</td></tr>
+          <tr>
+            <td colspan="4">Totali Pagina (righe visibili)</td>
+            <td class="num" id="ftOreD">0</td>
+            <td></td><td></td>
+            <td class="num" id="ftCostD">€ 0</td>
+            <td class="num" id="ftOreI">0</td>
+            <td></td><td></td>
+            <td class="num" id="ftCostI">€ 0</td>
+            <td class="num" id="ftForfait">€ 0</td>
+            <td></td>
+          </tr>
         </tfoot>
       </table>
-      <datalist id="centriList"></datalist>
-      <datalist id="vociList"></datalist>
     </div>
-
-    <p class="note note-download" style="margin-top:8px">Versione: STANDARD • Filtri con totali filtrati • Palette centri • Stampa A4 • Export CSV/HTML</p>
   </div>
+  
+  <p class="note" style="margin-top:8px">Versione 2.2 • Ripristinate tutte le voci standard (Logistica, Qualità, ecc.)</p>
+
+  <datalist id="centriList"></datalist>
+  <datalist id="vociList"></datalist>
+</div>
 
 <script>
-(function(){
-  const fmtEur = new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'});
-  const fmtNum = new Intl.NumberFormat('it-IT',{minimumFractionDigits:2, maximumFractionDigits:2});
-  const qs = sel=>document.querySelector(sel);
-  const qsa = sel=>Array.from(document.querySelectorAll(sel));
+const app = (function(){
+  // --- Config & Data ---
+  const fmtEur = new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR', maximumFractionDigits:0});
+  const fmtDec = new Intl.NumberFormat('it-IT',{minimumFractionDigits:2, maximumFractionDigits:2});
+  const parseNum = v => {
+    if(!v) return 0;
+    if(typeof v==='number') return v;
+    const n = parseFloat((''+v).replace(/\./g,'').replace(',','.'));
+    return isNaN(n)?0:n;
+  };
+  const qs = s => document.querySelector(s);
+  const qsa = s => document.querySelectorAll(s);
 
-  // ===== DEFAULT (immagine di riferimento ripristinabile) =====
+  const CENTRI_DEF = ['Reparto','Ferro','Magazzino','Ufficio Tecnico','Qualità','Manutenzione','Logistica','Sicurezza','Servizi','Amministrazione','Commerciale'];
+  
+  // Dati di default COMPLETI (v1 + v2)
   const DEFAULT_ROWS = [
-      // ===== INTERNI – REPARTO =====
-      {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Capo reparto', oreDir:0, costoOrario:28, coeffDir:1.00, oreInd:6, costoInd:28, coeffInd:1.00, forfait:0, note:'coordinamento'},
-      {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Carpentieri casseri', oreDir:0, costoOrario:22, coeffDir:1.00, oreInd:0, costoInd:22, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Operaio getto', oreDir:0, costoOrario:22, coeffDir:1.00, oreInd:0, costoInd:22, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Finitura / vibrazione', oreDir:0, costoOrario:21, coeffDir:1.00, oreInd:0, costoInd:21, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Pulizia casseri', oreDir:0, costoOrario:20, coeffDir:1.00, oreInd:0, costoInd:20, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – FERRO =====
-      {sel:false,tipo:'Interno',centro:'Ferro',ruolo:'Armatori (gabbie/reti)', oreDir:0, costoOrario:25, coeffDir:1.00, oreInd:0, costoInd:25, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Ferro',ruolo:'Taglio e piega', oreDir:0, costoOrario:24, coeffDir:1.00, oreInd:0, costoInd:24, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – MAGAZZINO / LOGISTICA =====
-      {sel:false,tipo:'Interno',centro:'Magazzino',ruolo:'Carrellisti / movimentazione', oreDir:0, costoOrario:20, coeffDir:1.00, oreInd:0, costoInd:20, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Logistica',ruolo:'Pianificazione carichi', oreDir:0, costoOrario:21, coeffDir:1.00, oreInd:2, costoInd:21, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – MANUTENZIONE =====
-      {sel:false,tipo:'Interno',centro:'Manutenzione',ruolo:'Meccanici/impiantisti', oreDir:0, costoOrario:23, coeffDir:1.00, oreInd:2, costoInd:23, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – QUALITÀ / SICUREZZA =====
-      {sel:false,tipo:'Interno',centro:'Qualità',ruolo:'Collaudi e controlli', oreDir:0, costoOrario:24, coeffDir:1.00, oreInd:3, costoInd:24, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Sicurezza',ruolo:'Preposto / RSPP supporto', oreDir:0, costoOrario:22, coeffDir:1.00, oreInd:2, costoInd:22, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – UFFICIO TECNICO =====
-      {sel:false,tipo:'Interno',centro:'Ufficio Tecnico',ruolo:'Disegnatori / tecnici', oreDir:0, costoOrario:28, coeffDir:1.00, oreInd:6, costoInd:28, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Ufficio Tecnico',ruolo:'Tecnico di produzione', oreDir:0, costoOrario:29, coeffDir:1.00, oreInd:4, costoInd:29, coeffInd:1.00, forfait:0, note:''},
-      // ===== INTERNI – AMMINISTRAZIONE / COMMERCIALE =====
-      {sel:false,tipo:'Interno',centro:'Amministrazione',ruolo:'Segreteria commessa', oreDir:0, costoOrario:26, coeffDir:1.00, oreInd:3, costoInd:26, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Interno',centro:'Commerciale',ruolo:'Preventivista / PM', oreDir:0, costoOrario:27, coeffDir:1.00, oreInd:2, costoInd:27, coeffInd:1.00, forfait:0, note:''},
-      // ===== ESTERNI — FORFAIT TIPICI =====
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Nolo autogru', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:'tariffa/giorno'},
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Trasporto prefabbricati (bilico)', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:'€/viaggio'},
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Trasporto prefabbricati (carro attrezzato)', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:'€/viaggio'},
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Nolo piattaforma aerea', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:'€/giorno'},
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Subappalto casseri speciali', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:''},
-      {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Stoccaggio esterno', oreDir:0, costoOrario:0, coeffDir:1.00, oreInd:0, costoInd:0, coeffInd:1.00, forfait:0, note:'€/mese'}
+    // REPARTO
+    {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Capo reparto', oreDir:0, costoOrario:28, coeffDir:1, oreInd:6, costoInd:28, coeffInd:1, forfait:0, note:'coordinamento'},
+    {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Carpentieri casseri', oreDir:0, costoOrario:22, coeffDir:1, oreInd:0, costoInd:22, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Operaio getto', oreDir:0, costoOrario:22, coeffDir:1, oreInd:0, costoInd:22, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Finitura / vibrazione', oreDir:0, costoOrario:21, coeffDir:1, oreInd:0, costoInd:21, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Reparto',ruolo:'Pulizia casseri', oreDir:0, costoOrario:20, coeffDir:1, oreInd:0, costoInd:20, coeffInd:1, forfait:0, note:''},
+    
+    // FERRO
+    {sel:false,tipo:'Interno',centro:'Ferro',ruolo:'Armatori (gabbie)', oreDir:0, costoOrario:25, coeffDir:1, oreInd:0, costoInd:25, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Ferro',ruolo:'Taglio e piega', oreDir:0, costoOrario:24, coeffDir:1, oreInd:0, costoInd:24, coeffInd:1, forfait:0, note:''},
+    
+    // LOGISTICA / MAGAZZINO
+    {sel:false,tipo:'Interno',centro:'Magazzino',ruolo:'Carrellisti', oreDir:0, costoOrario:20, coeffDir:1, oreInd:0, costoInd:20, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Logistica',ruolo:'Pianificazione carichi', oreDir:0, costoOrario:21, coeffDir:1, oreInd:2, costoInd:21, coeffInd:1, forfait:0, note:''},
+
+    // MANUTENZIONE / QUALITA / SICUREZZA
+    {sel:false,tipo:'Interno',centro:'Manutenzione',ruolo:'Meccanici/impiantisti', oreDir:0, costoOrario:23, coeffDir:1, oreInd:2, costoInd:23, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Qualità',ruolo:'Collaudi e controlli', oreDir:0, costoOrario:24, coeffDir:1, oreInd:3, costoInd:24, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Sicurezza',ruolo:'Preposto / RSPP', oreDir:0, costoOrario:22, coeffDir:1, oreInd:2, costoInd:22, coeffInd:1, forfait:0, note:''},
+
+    // UFFICIO TECNICO
+    {sel:false,tipo:'Interno',centro:'Ufficio Tecnico',ruolo:'Disegnatori', oreDir:0, costoOrario:28, coeffDir:1, oreInd:6, costoInd:28, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Ufficio Tecnico',ruolo:'Tecnico di produzione', oreDir:0, costoOrario:29, coeffDir:1, oreInd:4, costoInd:29, coeffInd:1, forfait:0, note:''},
+
+    // AMMINISTRAZIONE / COMMERCIALE
+    {sel:false,tipo:'Interno',centro:'Amministrazione',ruolo:'Segreteria', oreDir:0, costoOrario:26, coeffDir:1, oreInd:3, costoInd:26, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Interno',centro:'Commerciale',ruolo:'Preventivista / PM', oreDir:0, costoOrario:27, coeffDir:1, oreInd:2, costoInd:27, coeffInd:1, forfait:0, note:''},
+
+    // SERVIZI ESTERNI
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Nolo autogru', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:'tariffa/giorno'},
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Trasporto (Bilico)', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:'€/viaggio'},
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Trasporto (Carro attrez.)', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:'€/viaggio'},
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Piattaforma aerea', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:'€/giorno'},
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Subappalto casseri', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:''},
+    {sel:false,tipo:'Esterno',centro:'Servizi',ruolo:'Stoccaggio esterno', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:'€/mese'}
   ];
 
-  const state = {
+  let state = {
     rows: JSON.parse(JSON.stringify(DEFAULT_ROWS)),
     overheadPct: 15,
+    imprevistiPct: 0,
+    marginePct: 10,
+    costiFissi: 0,
     pezzi: 0,
     volume: 0,
     coeffGlobale: 1,
-    filters: { q:'', tipo:'', centro:'' }
+    filter: { q:'', tipo:'', centro:'' }
   };
 
-  const LSKEY = 'foglio-ore-costi-precompressi-STANDARD';
-  const saveLS = ()=>{ localStorage.setItem(LSKEY, JSON.stringify(state)); };
-  const loadLS = ()=>{ const v = localStorage.getItem(LSKEY); if(v){ try{ const o=JSON.parse(v); Object.assign(state,o); }catch(e){} } };
+  // --- Core Functions ---
 
-  const parseNum = v => {
-    if(v===undefined||v===null) return 0;
-    if(typeof v==='number') return v;
-    v = (''+v).trim().replace(/\./g,'').replace(',','.');
-    const n = parseFloat(v);
-    return isNaN(n)?0:n;
-  };
-
-  function esc(s){ return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\"','&quot;'); }
-
-  function rowHTML(r,i){
-    const bgCentro = CENTRO_PALETTE[r.centro] || (r.tipo==='Esterno' ? 'rgba(94,234,212,0.10)' : 'transparent');
-    const styleRow = `background: linear-gradient(90deg, ${bgCentro}, transparent)`;
-    const cd = parseNum(r.oreDir)*parseNum(r.costoOrario)*(parseNum(r.coeffDir)||1)*parseNum(state.coeffGlobale||1);
-    const ci = parseNum(r.oreInd)*parseNum(r.costoInd)*(parseNum(r.coeffInd)||1)*parseNum(state.coeffGlobale)||1;
-    return `<tr style="${styleRow}" data-index="${i}">
-      <td><input type="checkbox" ${r.sel?'checked':''} data-i="${i}" data-k="sel"></td>
-      <td>
-        <select data-i="${i}" data-k="tipo">
-          <option ${r.tipo==='Interno'?'selected':''}>Interno</option>
-          <option ${r.tipo==='Esterno'?'selected':''}>Esterno</option>
-        </select>
-      </td>
-      <td><input list="centriList" type="text" value="${esc(r.centro)}" data-i="${i}" data-k="centro"></td>
-      <td><input type="text" value="${esc(r.ruolo)}" data-i="${i}" data-k="ruolo" list="vociList"></td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.oreDir||0)}" data-i="${i}" data-k="oreDir"></td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.costoOrario||0)}" data-i="${i}" data-k="costoOrario"></td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.coeffDir||1)}" data-i="${i}" data-k="coeffDir"></td>
-      <td class="num" data-cd>€ ${fmtNum.format(cd)}</td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.oreInd||0)}" data-i="${i}" data-k="oreInd"></td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.costoInd||0)}" data-i="${i}" data-k="costoInd"></td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.coeffInd||1)}" data-i="${i}" data-k="coeffInd"></td>
-      <td class="num" data-ci>€ ${fmtNum.format(parseNum(r.oreInd)*parseNum(r.costoInd)*(parseNum(r.coeffInd)||1)*parseNum(state.coeffGlobale)||1)}</td>
-      <td class="num"><input class="num" type="text" value="${fmtNum.format(r.forfait||0)}" data-i="${i}" data-k="forfait"></td>
-      <td><input type="text" value="${esc(r.note)}" data-i="${i}" data-k="note"></td>
-    </tr>`;
+  function init(){
+    loadLS();
+    bindEvents();
+    renderStructure(); 
+    updateCalculations();
   }
 
-  function render(){
-    qs('#overheadPct').value = fmtNum.format(state.overheadPct||0);
-    qs('#pezzi').value = state.pezzi||'';
-    qs('#volume').value = state.volume?fmtNum.format(state.volume):'';
-    qs('#coeffGlobale').value = state.coeffGlobale?fmtNum.format(state.coeffGlobale):'1,00';
-
-    const filteredIdx = state.rows.map((r,i)=>({r,i})).map(({i})=>i);
-    qs('#body').innerHTML = filteredIdx.map(i=>rowHTML(state.rows[i],i)).join('');
-
-    qsa('#body input, #body select').forEach(el=>{
-      el.addEventListener('input', onCellEdit);
-      el.addEventListener('change', onCellEdit);
-    });
-
-    buildCentroFilter();
-    buildVoceFilter();
-    wireFilters();
-    wireContextualVoci();
-    computeTotals(); // calcola sui filtri correnti (se attivi)
-    saveLS();
+  function saveLS(){
+    localStorage.setItem('OreCosti_v2', JSON.stringify(state));
+  }
+  function loadLS(){
+    const d = localStorage.getItem('OreCosti_v2');
+    if(d) { try{ Object.assign(state, JSON.parse(d)); }catch(e){} }
   }
 
-  function buildCentroFilter(){
-    const sel = qs('#fCentro');
-    const keep = sel.value;
-    const values = Array.from(new Set([...CENTRI_PREDEFINITI, ...state.rows.map(r=>r.centro).filter(Boolean)])).sort();
-    sel.innerHTML = '<option value="">Centro di costo: tutti</option>' + values.map(v=>`<option ${keep===v?'selected':''}>${v}</option>`).join('');
-    const dl = qs('#centriList');
-    dl.innerHTML = values.map(v=>`<option value="${v}"></option>`).join('');
-  }
-
-  function onCellEdit(e){
-    const el=e.target; const i=+el.dataset.i; const k=el.dataset.k; if(i>=0){
-      const numKeys=['oreDir','costoOrario','oreInd','costoInd','coeffDir','coeffInd','forfait'];
-      if(numKeys.includes(k)) state.rows[i][k]=parseNum(el.value);
-      else if(k==='sel') state.rows[i][k]=el.checked;
-      else state.rows[i][k]=el.value;
+  // Costruisce la tabella HTML (solo quando cambiano righe/filtri)
+  function renderStructure(){
+    const tbody = qs('#body');
+    const filtered = getFilteredRows();
+    
+    if(filtered.length === 0){
+      tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:20px;color:var(--sub)">Nessuna voce trovata. <button class="btn" onclick="app.addRow()">Aggiungi riga</button></td></tr>';
+      updateFiltersUI();
+      return;
     }
-    computeTotals(); saveLS();
+
+    const html = filtered.map(({r, idx}) => {
+      // Sfumatura colore centro
+      const isExt = r.tipo==='Esterno';
+      let bgStyle = isExt ? 'background:rgba(94,234,212,0.03)' : '';
+      
+      return `<tr data-idx="${idx}" style="${bgStyle}">
+        <td style="text-align:center"><input type="checkbox" class="row-sel" ${r.sel?'checked':''}></td>
+        <td>
+          <select class="inp-tipo">
+            <option ${r.tipo==='Interno'?'selected':''}>Interno</option>
+            <option ${r.tipo==='Esterno'?'selected':''}>Esterno</option>
+          </select>
+        </td>
+        <td><input type="text" list="centriList" class="inp-centro" value="${esc(r.centro)}"></td>
+        <td><input type="text" list="vociList" class="inp-ruolo" value="${esc(r.ruolo)}"></td>
+        
+        <!-- DIRETTI -->
+        <td><input type="text" class="num inp-calc inp-oreD" value="${fmtNum(r.oreDir)}"></td>
+        <td><input type="text" class="num inp-calc inp-costoH" value="${fmtNum(r.costoOrario)}"></td>
+        <td><input type="text" class="num inp-calc inp-cDir" value="${fmtNum(r.coeffDir)}"></td>
+        <td class="num data-bar-cell">
+           <div class="data-bar bar-cd" style="width:0%"></div>
+           <span class="val-cd">€ 0</span>
+        </td>
+
+        <!-- INDIRETTI -->
+        <td><input type="text" class="num inp-calc inp-oreI" value="${fmtNum(r.oreInd)}"></td>
+        <td><input type="text" class="num inp-calc inp-costoHi" value="${fmtNum(r.costoInd)}"></td>
+        <td><input type="text" class="num inp-calc inp-cInd" value="${fmtNum(r.coeffInd)}"></td>
+        <td class="num data-bar-cell">
+           <div class="data-bar bar-ci" style="width:0%"></div>
+           <span class="val-ci">€ 0</span>
+        </td>
+
+        <td><input type="text" class="num inp-calc inp-forf" value="${fmtNum(r.forfait)}"></td>
+        <td><input type="text" class="inp-note" value="${esc(r.note)}"></td>
+      </tr>`;
+    }).join('');
+
+    tbody.innerHTML = html;
+    updateFiltersUI();
   }
 
-  function getTotals(rowsArr){
-    let oreD=0, oreI=0, costoD=0, costoI=0, forfait=0;
-    const g = parseNum(state.coeffGlobale)||1;
-    const rows = rowsArr && rowsArr.length ? rowsArr : state.rows;
-    for(const r of rows){
-      const cd = parseNum(r.oreDir)*parseNum(r.costoOrario)*(parseNum(r.coeffDir)||1)*g;
-      const ci = parseNum(r.oreInd)*parseNum(r.costoInd)*(parseNum(r.coeffInd)||1)*g;
-      oreD += parseNum(r.oreDir);
-      oreI += parseNum(r.oreInd);
-      costoD += cd;
-      costoI += ci;
-      if((r.tipo||'')==='Esterno') forfait += parseNum(r.forfait);
-    }
-    const overhead = parseNum(state.overheadPct)/100 * costoD;
-    return {oreD, oreI, costoD, costoI, forfait, overhead, costoTot: costoD + costoI + forfait + overhead};
-  }
-
-  function computeTotals(){
+  // Aggiorna solo i numeri e i totali
+  function updateCalculations(){
+    // Leggi parametri globali
     state.overheadPct = parseNum(qs('#overheadPct').value);
+    state.imprevistiPct = parseNum(qs('#imprevistiPct').value);
+    state.marginePct = parseNum(qs('#marginePct').value);
+    state.costiFissi = parseNum(qs('#costiFissi').value);
+    state.coeffGlobale = parseNum(qs('#coeffGlobale').value) || 1;
     state.pezzi = parseNum(qs('#pezzi').value);
     state.volume = parseNum(qs('#volume').value);
-    state.coeffGlobale = parseNum(qs('#coeffGlobale').value)||1;
 
-    // aggiorna importi riga visibili
-    qsa('#body tr').forEach((tr)=>{
-      const idx = +tr.dataset.index; const r = state.rows[idx];
-      const cd = parseNum(r.oreDir)*parseNum(r.costoOrario)*(parseNum(r.coeffDir)||1)*(parseNum(state.coeffGlobale)||1);
-      const ci = parseNum(r.oreInd)*parseNum(r.costoInd)*(parseNum(r.coeffInd)||1)*(parseNum(state.coeffGlobale)||1);
-      const cde = tr.querySelector('[data-cd]'); if(cde) cde.textContent = fmtEur.format(cd);
-      const cie = tr.querySelector('[data-ci]'); if(cie) cie.textContent = fmtEur.format(ci);
+    let totOreD=0, totOreI=0, totCostD=0, totCostI=0, totForf=0;
+    let maxCostRow = 1; // per le barre visuali
+
+    // Itera sulle righe DOM presenti (che sono quelle filtrate)
+    const rows = Array.from(qs('#body').rows);
+    
+    // Passaggio 1: calcolo valori riga
+    rows.forEach(tr => {
+      if(!tr.dataset.idx) return; // skip empty msg
+      const i = +tr.dataset.idx;
+      const r = state.rows[i];
+      const glob = state.coeffGlobale;
+
+      const cd = r.oreDir * r.costoOrario * (r.coeffDir||1) * glob;
+      const ci = r.oreInd * r.costoInd * (r.coeffInd||1) * glob;
+      
+      // Update UI cell text (span)
+      tr.querySelector('.val-cd').textContent = fmtEur.format(cd);
+      tr.querySelector('.val-ci').textContent = fmtEur.format(ci);
+      
+      // Accumula Totali
+      totOreD += r.oreDir;
+      totOreI += r.oreInd;
+      totCostD += cd;
+      totCostI += ci;
+      if(r.tipo==='Esterno') totForf += r.forfait;
+      
+      maxCostRow = Math.max(maxCostRow, cd, ci);
     });
 
-    // calcola totali SOLO sulle righe filtrate
-    const filteredPairs = getFilteredPairs();
-    const filteredRows = filteredPairs.map(p=>p.r);
-    const t = getTotals(filteredRows);
+    // Passaggio 2: Aggiorna barre visuali
+    rows.forEach(tr => {
+        if(!tr.dataset.idx) return;
+        const i = +tr.dataset.idx;
+        const r = state.rows[i];
+        const glob = state.coeffGlobale;
+        const cd = r.oreDir * r.costoOrario * (r.coeffDir||1) * glob;
+        const ci = r.oreInd * r.costoInd * (r.coeffInd||1) * glob;
+        
+        tr.querySelector('.bar-cd').style.width = (cd/maxCostRow*100)+'%';
+        tr.querySelector('.bar-ci').style.width = (ci/maxCostRow*100)+'%';
+    });
 
-    qs('#oreDiretteTot').textContent = fmtNum.format(t.oreD) + ' h';
-    qs('#oreIndiretteTot').textContent = fmtNum.format(t.oreI) + ' h';
-    qs('#costoDirettoTot').textContent = fmtEur.format(t.costoD);
-    qs('#costoIndireT').textContent = fmtEur.format(t.costoI + t.overhead + t.forfait);
-    qs('#costoTot').textContent = fmtEur.format(t.costoTot);
+    // === TOTALI GENERALI ===
+    const overheadVal = totCostD * (state.overheadPct/100);
+    const costoIndustriale = totCostD + totCostI + totForf + overheadVal;
+    
+    const imprevistiVal = costoIndustriale * (state.imprevistiPct/100);
+    const costoPieno = costoIndustriale + imprevistiVal + state.costiFissi;
+    
+    const margineVal = costoPieno * (state.marginePct/100);
+    const prezzoFinale = costoPieno + margineVal;
 
-    const perPezzo = state.pezzi>0 ? t.costoTot / state.pezzi : 0;
-    const perMc = state.volume>0 ? t.costoTot / state.volume : 0;
-    qs('#costoPerPezzo').textContent = perPezzo? fmtEur.format(perPezzo): '€ 0,00';
-    qs('#costoPerMc').textContent = perMc? fmtEur.format(perMc): '€ 0,00';
+    // Aggiornamento Cards
+    qs('#oreDiretteTot').textContent = fmtDec.format(totOreD) + ' h';
+    qs('#costoDirettoTot').textContent = fmtEur.format(totCostD);
+    qs('#costoIndustriale').textContent = fmtEur.format(costoIndustriale);
+    qs('#costoPieno').textContent = fmtEur.format(costoPieno);
+    qs('#prezzoFinale').textContent = fmtEur.format(prezzoFinale);
+
+    // KPI Unitari (basati sul Prezzo Finale, non sul costo secco)
+    const pp = state.pezzi > 0 ? prezzoFinale/state.pezzi : 0;
+    const pm = state.volume > 0 ? prezzoFinale/state.volume : 0;
+    qs('#costoPerPezzo').textContent = fmtEur.format(pp);
+    qs('#costoPerMc').textContent = fmtEur.format(pm);
+
+    // Footer Totals (Riepilogo tabellare grezzo)
+    qs('#ftOreD').textContent = fmtDec.format(totOreD);
+    qs('#ftCostD').textContent = fmtEur.format(totCostD);
+    qs('#ftOreI').textContent = fmtDec.format(totOreI);
+    qs('#ftCostI').textContent = fmtEur.format(totCostI);
+    qs('#ftForfait').textContent = fmtEur.format(totForf);
+  }
+
+  // --- Event Handling ---
+
+  function bindEvents(){
+    // Global inputs
+    qsa('.split input').forEach(el => el.addEventListener('input', ()=>{ updateCalculations(); saveLS(); }));
+    
+    // Table delegation
+    const body = qs('#body');
+    
+    body.addEventListener('input', e => {
+      const el = e.target;
+      const tr = el.closest('tr');
+      if(!tr) return;
+      const i = +tr.dataset.idx;
+      const r = state.rows[i];
+
+      if(el.classList.contains('inp-calc')) {
+        if(el.classList.contains('inp-oreD')) r.oreDir = parseNum(el.value);
+        if(el.classList.contains('inp-costoH')) r.costoOrario = parseNum(el.value);
+        if(el.classList.contains('inp-cDir')) r.coeffDir = parseNum(el.value);
+        if(el.classList.contains('inp-oreI')) r.oreInd = parseNum(el.value);
+        if(el.classList.contains('inp-costoHi')) r.costoInd = parseNum(el.value);
+        if(el.classList.contains('inp-cInd')) r.coeffInd = parseNum(el.value);
+        if(el.classList.contains('inp-forf')) r.forfait = parseNum(el.value);
+        updateCalculations(); 
+      } else if(el.classList.contains('inp-tipo')){
+        r.tipo = el.value;
+        renderStructure(); 
+      } else if(el.classList.contains('inp-centro')){
+        r.centro = el.value;
+        updateFiltersUI();
+      } else if(el.classList.contains('inp-ruolo')){
+        r.ruolo = el.value;
+      } else if(el.classList.contains('inp-note')){
+        r.note = el.value;
+      } else if(el.classList.contains('row-sel')){
+        r.sel = el.checked;
+      }
+      saveLS();
+    });
+
+    // Toolbar Buttons
+    qs('#addRow').onclick = () => {
+        state.rows.push({sel:false,tipo:'Interno',centro:'',ruolo:'',oreDir:0,costoOrario:0,coeffDir:1,oreInd:0,costoInd:0,coeffInd:1,forfait:0,note:''});
+        renderStructure(); updateCalculations(); saveLS();
+    };
+    qs('#dupRow').onclick = () => {
+        const dups = state.rows.filter(r=>r.sel).map(r=>({...r, sel:false}));
+        if(dups.length){ state.rows.push(...dups); renderStructure(); updateCalculations(); saveLS(); }
+    };
+    qs('#delRow').onclick = () => {
+        if(!confirm('Eliminare le righe selezionate?')) return;
+        state.rows = state.rows.filter(r=>!r.sel);
+        renderStructure(); updateCalculations(); saveLS();
+    };
+    qs('#restoreDefaults').onclick = () => {
+       DEFAULT_ROWS.forEach(def => {
+           if(!state.rows.find(r => r.centro===def.centro && r.ruolo===def.ruolo)){
+               state.rows.push(JSON.parse(JSON.stringify(def)));
+           }
+       });
+       renderStructure(); updateCalculations(); saveLS();
+    };
+    qs('#reset').onclick = () => {
+        if(confirm('Cancellare tutto?')){
+            state.rows = [];
+            renderStructure(); updateCalculations(); saveLS();
+        }
+    };
+    
+    qs('#selAll').onchange = (e) => {
+        state.rows.forEach(r => r.sel = e.target.checked);
+        renderStructure();
+    };
+
+    // Filters
+    ['search','fTipo','fCentro'].forEach(id => {
+        qs('#'+id).addEventListener('input', e => {
+             state.filter.q = qs('#search').value.toLowerCase();
+             state.filter.tipo = qs('#fTipo').value;
+             state.filter.centro = qs('#fCentro').value;
+             renderStructure(); updateCalculations();
+        });
+    });
+
+    // Export / Print
+    qs('#print').onclick = () => window.print();
+    qs('#exportCSV').onclick = exportCSV;
+    qs('#save').onclick = () => downloadJSON(state, 'OreCosti.json');
+    qs('#load').onclick = loadJSON;
+  }
+
+  // --- Helpers ---
+
+  function getFilteredRows(){
+    const f = state.filter;
+    return state.rows.map((r,idx)=>({r,idx})).filter(({r}) => {
+        if(f.tipo && r.tipo !== f.tipo) return false;
+        if(f.centro && r.centro !== f.centro) return false;
+        if(f.q && !((r.ruolo||'').toLowerCase().includes(f.q) || (r.note||'').toLowerCase().includes(f.q))) return false;
+        return true;
+    });
+  }
+
+  function updateFiltersUI(){
+    const centri = unique(state.rows.map(r=>r.centro));
+    const ruoli = unique(state.rows.map(r=>r.ruolo));
+    
+    fillSelect(qs('#fCentro'), centri, state.filter.centro, 'Tutti i Centri');
+    
+    qs('#centriList').innerHTML = [...new Set([...CENTRI_DEF, ...centri])].sort().map(v=>`<option value="${esc(v)}">`).join('');
+    qs('#vociList').innerHTML = ruoli.sort().map(v=>`<option value="${esc(v)}">`).join('');
+  }
+
+  function fillSelect(el, arr, current, defLabel){
+     const val = current;
+     el.innerHTML = `<option value="">${defLabel}</option>` + 
+        arr.sort().map(v => `<option value="${esc(v)}" ${v===val?'selected':''}>${esc(v)}</option>`).join('');
+  }
+
+  function unique(arr){ return [...new Set(arr.filter(x=>x))]; }
+  function esc(s){ return (s||'').replace(/"/g, '&quot;'); }
+  function fmtNum(n){ return (n||0).toLocaleString('it-IT',{minimumFractionDigits:0, maximumFractionDigits:2}); }
+
+  function sortBy(field){
+      const glob = state.coeffGlobale;
+      state.rows.sort((a,b) => {
+          let va=0, vb=0;
+          if(field === 'cd'){
+             va = a.oreDir*a.costoOrario*(a.coeffDir||1);
+             vb = b.oreDir*b.costoOrario*(b.coeffDir||1);
+          } else if(field === 'ci'){
+             va = a.oreInd*a.costoInd*(a.coeffInd||1);
+             vb = b.oreInd*b.costoInd*(b.coeffInd||1);
+          }
+          return vb - va; // Descending
+      });
+      renderStructure(); updateCalculations();
   }
 
   function exportCSV(){
-    const t = getTotals(); // export sempre su tutte le righe
-    const head = ['Tipo','Centro di costo','Ruolo/Voce','Ore dirette','Costo orario','Coeff dir.','Costo diretto','Ore indirette','Costo orario ind.','Coeff ind.','Costo indiretto','Forfait esterno','Note'];
-    const rows = state.rows.map(r=>[
-      r.tipo, r.centro, r.ruolo,
-      fmtNum.format(parseNum(r.oreDir)),
-      fmtNum.format(parseNum(r.costoOrario)),
-      fmtNum.format(parseNum(r.coeffDir||1)),
-      fmtNum.format(parseNum(r.oreDir)*parseNum(r.costoOrario)*(parseNum(r.coeffDir)||1)*(parseNum(state.coeffGlobale)||1)),
-      fmtNum.format(parseNum(r.oreInd)),
-      fmtNum.format(parseNum(r.costoInd)),
-      fmtNum.format(parseNum(r.coeffInd||1)),
-      fmtNum.format(parseNum(r.oreInd)*parseNum(r.costoInd)*(parseNum(r.coeffInd)||1)*(parseNum(state.coeffGlobale)||1)),
-      fmtNum.format((r.tipo==='Esterno')?parseNum(r.forfait):0),
-      r.note||''
-    ]);
-    const extra = [
-      [],
-      ['Overhead %', fmtNum.format(parseNum(state.overheadPct))],
-      ['Coeff. straordinari globale', fmtNum.format(parseNum(state.coeffGlobale)||1)],
-      ['Pezzi', state.pezzi||''],
-      ['Volume m3', state.volume?fmtNum.format(state.volume):''],
-      [],
-      ['Totale ore dirette', fmtNum.format(t.oreD)],
-      ['Totale ore indirette', fmtNum.format(t.oreI)],
-      ['Costo diretto', fmtNum.format(t.costoD)],
-      ['Costo indiretto + overhead + forfait', fmtNum.format(t.costoI + t.overhead + t.forfait)],
-      ['Costo totale', fmtNum.format(t.costoTot)]
-    ];
+      const head = ['Tipo','Centro','Ruolo','Ore Dir','Costo H','Coeff','Tot Dir','Ore Ind','Costo H Ind','Coeff','Tot Ind','Forfait','Note'];
+      const rows = state.rows.map(r => [
+          r.tipo, r.centro, r.ruolo,
+          fmtDec.format(r.oreDir), fmtDec.format(r.costoOrario), fmtDec.format(r.coeffDir),
+          fmtDec.format(r.oreDir*r.costoOrario*r.coeffDir),
+          fmtDec.format(r.oreInd), fmtDec.format(r.costoInd), fmtDec.format(r.coeffInd),
+          fmtDec.format(r.oreInd*r.costoInd*r.coeffInd),
+          fmtDec.format(r.forfait), r.note
+      ].join(';'));
+      
+      const extra = `\n\nPARAMETRI GENERALI\nOverhead %;${state.overheadPct}\nCoeff. Str;${state.coeffGlobale}\nImprevisti %;${state.imprevistiPct}\nMargine %;${state.marginePct}\nCosti Fissi;${state.costiFissi}`;
 
-    const sep = ';';
-    let csvTxt = head.join(sep)+"\n";
-    rows.forEach(r=>{ csvTxt += r.join(sep)+"\n"; });
-    csvTxt += "\n"; extra.forEach(r=>{ csvTxt += r.join(sep)+"\n"; });
-
-    const blob = new Blob(["\\uFEFF"+csvTxt], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'Ore_Costi_Personale_Precompressi.csv';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+      const csv = '\uFEFF' + head.join(';') + '\n' + rows.join('\n') + extra;
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='OreCosti_v2.csv'; document.body.appendChild(a); a.click(); a.remove();
   }
 
-  function manualSave(){
-    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'Foglio_Ore_Costi.json';
-    document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
+  function downloadJSON(obj, name){
+      const blob = new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
   }
-  function manualLoad(){
-    const inp = document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
-    inp.onchange=(e)=>{
-      const f = e.target.files[0]; if(!f) return;
-      const rd = new FileReader(); rd.onload=()=>{ try{ const o=JSON.parse(rd.result); Object.assign(state,o); render(); }catch(err){ alert('File non valido'); } };
-      rd.readAsText(f);
-    };
-    inp.click();
-  }
-  function downloadHTML(){
-    const html = '<!DOCTYPE html>'+document.documentElement.outerHTML;
-    const blob = new Blob([html], {type:'text/html;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'Foglio_Ore_Costi_Personale_STANDARD.html';
-    document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
+  function loadJSON(){
+      const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+      inp.onchange=e=>{
+          const f=e.target.files[0];
+          if(f){ const r=new FileReader(); r.onload=ev=>{ try{Object.assign(state,JSON.parse(ev.target.result)); renderStructure(); updateCalculations();}catch(x){alert('Errore file');} }; r.readAsText(f); }
+      };
+      inp.click();
   }
 
-  // Events toolbar
-  qs('#addRow').onclick = ()=> { state.rows.push({sel:false,tipo:'Interno',centro:'',ruolo:'', oreDir:0, costoOrario:0, coeffDir:1, oreInd:0, costoInd:0, coeffInd:1, forfait:0, note:''}); render(); };
-  qs('#dupRow').onclick = ()=> { const pick = state.rows.filter(r=>r.sel); pick.forEach(r=> state.rows.push({...r, sel:false})); render(); };
-  qs('#delRow').onclick = ()=> { state.rows = state.rows.filter(r=>!r.sel); render(); };
-
-  // Ripristina voci standard mancanti (merge, non cancella le righe personalizzate)
-  qs('#restoreDefaults').onclick = ()=> {
-    const exists = (a,b)=> (a.tipo===b.tipo && a.centro===b.centro && a.ruolo===b.ruolo);
-    DEFAULT_ROWS.forEach(def=>{
-      if(!state.rows.some(r=>exists(r,def))){
-        state.rows.push(JSON.parse(JSON.stringify(def)));
-      }
-    });
-    render();
-  };
-
-  qs('#reset').onclick = ()=> { if(confirm('Azzerare il foglio?')){ state.rows = []; state.overheadPct=0; state.pezzi=0; state.volume=0; state.coeffGlobale=1; render(); } };
-  qs('#exportCSV').onclick = exportCSV;
-  qs('#downloadHTML').onclick = downloadHTML;
-  qs('#print').onclick = ()=> window.print();
-  qs('#save').onclick = manualSave;
-  qs('#load').onclick = manualLoad;
-  qs('#selAll').addEventListener('change', (e)=>{ state.rows.forEach(r=>r.sel=e.target.checked); render(); });
-
-  // ==== FILTRI & MENU VOCI ====
-  function unique(arr){ return Array.from(new Set(arr)).filter(v=>v!==undefined && v!==null && (''+v).trim()!==''); }
-
-  function buildVoceFilter(){
-    const sel = qs('#fVoce');
-    if(!sel) return;
-    const keep = sel.value;
-
-    const filtroTipo = qs('#fTipo')?.value || '';
-    const filtroCentro = qs('#fCentro')?.value || '';
-
-    const values = state.rows
-      .filter(r => (!filtroTipo || r.tipo===filtroTipo) && (!filtroCentro || r.centro===filtroCentro))
-      .map(r => r.ruolo);
-    const options = ['<option value="">Voce: tutte</option>'].concat(
-      unique(values).sort().map(v => `<option ${keep===v?'selected':''}>${esc(v)}</option>`)
-    ).join('');
-    sel.innerHTML = options;
-  }
-
-  // Datalist contestuale per ruoli/voci
-  function wireContextualVoci(){
-    qsa('#body input[data-k="ruolo"]').forEach(inp => {
-      inp.addEventListener('focus', (e)=>{
-        const i = +e.target.dataset.i;
-        if(!(i>=0)) return;
-        const r = state.rows[i] || {};
-        const candidates = state.rows
-          .filter(x => (!r.tipo || x.tipo===r.tipo) && (!!r.centro ? x.centro===r.centro : true))
-          .map(x => x.ruolo);
-        const vlist = qs('#vociList');
-        if(vlist){
-          vlist.innerHTML = unique(candidates).sort().map(v => `<option value="${esc(v)}"></option>`).join('');
-        }
-      });
-    });
-  }
-
-  // Coppie righe/indici filtrate secondo i filtri attuali
-  function getFilteredPairs(){
-    const q = (qs('#search')?.value || '').toLowerCase();
-    const tipo = qs('#fTipo')?.value || '';
-    const centro = qs('#fCentro')?.value || '';
-    const voce = qs('#fVoce')?.value || '';
-
-    return state.rows
-      .map((r,i)=>({r,i}))
-      .filter(({r}) =>
-        (!tipo || r.tipo===tipo) &&
-        (!centro || r.centro===centro) &&
-        (!voce || r.ruolo===voce) &&
-        (!q || (r.ruolo||'').toLowerCase().includes(q) || (r.note||'').toLowerCase().includes(q))
-      );
-  }
-
-  function applyFilters(){
-    const body = qs('#body');
-    const filtered = getFilteredPairs();
-    body.innerHTML = filtered.map(({r,i}) => rowHTML(r,i)).join('');
-    qsa('#body input, #body select').forEach(el => {
-      el.addEventListener('input', onCellEdit);
-      el.addEventListener('change', onCellEdit);
-    });
-    wireContextualVoci();
-    computeTotals(); // i totali ora sono basati sulle righe filtrate
-  }
-
-  // Ricollega gli eventi dei filtri
-  function wireFilters(){
-    const s = qs('#search'); const t = qs('#fTipo'); const c = qs('#fCentro'); const v = qs('#fVoce');
-    if(s) s.addEventListener('input', applyFilters);
-    if(t) t.addEventListener('change', ()=>{ buildVoceFilter(); applyFilters(); });
-    if(c) c.addEventListener('change', ()=>{ buildVoceFilter(); applyFilters(); });
-    if(v) v.addEventListener('change', applyFilters);
-  }
-
-  // Init
-  loadLS();
-  render();
-  buildVoceFilter();
-  wireFilters();
-  wireContextualVoci();
+  return { init, addRow: qs('#addRow').onclick, sortBy };
 })();
+
+app.init();
 </script>
 </body>
 </html>
